@@ -31,7 +31,7 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/data/postgres
-    env_file: ".env"
+    env_file: "backend/.env"
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
