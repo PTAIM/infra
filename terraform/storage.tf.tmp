@@ -1,0 +1,16 @@
+# Pega o Namespace do Object Storage (necessário para criar um bucket)
+data "oci_objectstorage_namespace" "ns" {
+  compartment_id = data.oci_identity_compartment.main.id
+}
+
+resource "oci_objectstorage_bucket" "main_bucket" {
+  compartment_id = data.oci_identity_compartment.main.id
+  name           = "meu-projeto-storage-bucket-${random_id.bucket_prefix.hex}"
+  namespace      = data.oci_objectstorage_namespace.ns.namespace
+  access_type    = "ObjectReadWithoutList" # Permite leitura pública de objetos
+}
+
+# Garante um nome de bucket único
+resource "random_id" "bucket_prefix" {
+  byte_length = 8
+}

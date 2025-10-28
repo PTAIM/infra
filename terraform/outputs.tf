@@ -5,7 +5,7 @@ output "vm_public_ip" {
 
 output "load_balancer_ip" {
   description = "IP Público do Load Balancer (aponte seu DNS para cá)"
-  value       = oci_load_balancer_load_balancer.main_lb.ip_addresses[0].ip_address
+  value       = oci_load_balancer_load_balancer.main_lb.ip_address_details[0].ip_address
 }
 
 # output "db_connection_string_low" {

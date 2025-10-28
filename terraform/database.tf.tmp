@@ -1,0 +1,18 @@
+resource "oci_database_autonomous_database" "main_db" {
+  compartment_id      = data.oci_identity_compartment.main.id
+  db_name             = "maindb"
+  display_name        = "Main Autonomous DB"
+  admin_password      = var.db_admin_password
+  
+  # Valores obrigatórios, mesmo que ignorados pelo Free Tier
+  data_storage_size_in_tbs = 1
+  cpu_core_count         = 1
+
+  # Configurações do "Always Free"
+  is_free_tier     = true
+  db_workload      = "OLTP" # Bom para apps web
+  
+  # Permite acesso de qualquer IP (mais fácil para começar)
+  # Para produção, restrinja isso com "whitelisted_ips"
+  whitelisted_ips  = ["0.0.0.0/0"] 
+}

@@ -1,7 +1,7 @@
-# Busca a imagem "Always Free" mais recente do Oracle Linux para ARM
+# Busca a imagem "Always Free" mais recente do Ubuntu
 data "oci_core_images" "vm_image" {
   compartment_id = data.oci_identity_compartment.main.id
-  operating_system = "Oracle Linux"
+  operating_system = "Canonical Ubuntu"
   shape          = "VM.Standard.E2.1.Micro" # Filtra imagens compatíveis com ARM
   sort_by        = "TIMECREATED"
   sort_order     = "DESC"
