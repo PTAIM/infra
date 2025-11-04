@@ -1,1 +1,0 @@
-This folder is a empty folder to receive the build of Front-end
