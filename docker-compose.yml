@@ -2,9 +2,10 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
       args:
         CACHE_BUSTER: ${CACHE_BUSTER:-$(date +%s)}
-        VITE_API_URL: http://localhost:8000/
+        VITE_API_URL: http://localhost:8000
     ports:
       - "80:80"
   backend:
@@ -14,7 +15,6 @@ services:
         CACHE_BUSTER: ${CACHE_BUSTER:-$(date +%s)}
     environment:
       DB_HOST: db
-      CORS_ORIGINS: http://localhost
     depends_on:
       db:
         condition: service_healthy
@@ -33,6 +33,25 @@ services:
       interval: 5s
       timeout: 2s
       retries: 5
+  rabbitmq:
+    image: "rabbitmq:3-management-alpine"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "status" ]
+  email:
+    build:
+      context: ./email
+      dockerfile: Dockerfile
+      args:
+        CACHE_BUSTER: ${CACHE_BUSTER:-$(date +%s)}
+    env_file: ./email/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "9000:9000"
 
 volumes:
   postgres_data:
