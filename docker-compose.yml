@@ -16,7 +16,10 @@ services:
     environment:
       DB_HOST: db
       ALLOWED_HOSTS: "*"
+      RABBIT_URL: "amqp://guest:guest@rabbitmq:5672/"
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       db:
         condition: service_healthy
     ports:
@@ -30,7 +33,7 @@ services:
     env_file: ".env"
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "telemedicina_db" ]
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "telemedicina_db"]
       interval: 5s
       timeout: 2s
       retries: 5
@@ -40,7 +43,7 @@ services:
       - "5672:5672"
       - "15672:15672"
     healthcheck:
-      test: [ "CMD", "rabbitmq-diagnostics", "status" ]
+      test: ["CMD", "rabbitmq-diagnostics", "status"]
   email:
     build:
       context: ./email
