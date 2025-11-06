@@ -15,6 +15,7 @@ services:
         CACHE_BUSTER: ${CACHE_BUSTER:-$(date +%s)}
     environment:
       DB_HOST: db
+      ALLOWED_HOSTS: "*"
     depends_on:
       db:
         condition: service_healthy
@@ -52,6 +53,18 @@ services:
         condition: service_healthy
     ports:
       - "9000:9000"
+  ai:
+    build:
+      context: ./ai
+      dockerfile: Dockerfile
+      args:
+        CACHE_BUSTER: ${CACHE_BUSTER:-$(date +%s)}
+    env_file: ./ai/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "9001:9001"
 
 volumes:
   postgres_data:

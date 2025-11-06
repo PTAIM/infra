@@ -5,11 +5,12 @@ FROM alpine/git:latest AS cloner
 # Define o diretório de trabalho
 WORKDIR /app
 
+ARG CACHE_BUSTER=default
+
 # (OPCIONAL) Para repositórios privados, montamos a chave SSH secreta
 # O BuildKit garante que esta chave SÓ exista durante este comando e não seja salva na imagem
-ARG CACHE_BUSTER=default
-RUN git clone https://github.com/PTAIM/middle-end.git .
-RUN git checkout main
+RUN git clone https://github.com/ricardovinicius/medical-service .
+RUN git checkout rabbit
 
 # (OBRIGATÓRIO) Truque para invalidar o cache
 # Passamos um argumento (ex: a data ou o hash do commit) para que esta camada
@@ -24,8 +25,9 @@ WORKDIR /app
 # Copia o código-fonte do estágio 'cloner'
 COPY --from=cloner /app .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir uv
+RUN uv sync
 
-EXPOSE 9000
+EXPOSE 9001
 
-CMD ["faststream", "run", "app.main:app", "--host", "0.0.0.0", "--port", "9000"]
+CMD ["uv", "run", "faststream", "run", "main:app", "--host", "0.0.0.0", "--port", "9001"]
